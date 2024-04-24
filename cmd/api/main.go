@@ -4,19 +4,17 @@ import (
 	"log"
 	"os"
 
-	"github.com/axel-andrade/finance_planner_api/internal/configuration/bootstrap"
-	mongo_database "github.com/axel-andrade/finance_planner_api/internal/configuration/database/mongo"
-	redis_database "github.com/axel-andrade/finance_planner_api/internal/configuration/database/redis"
-	"github.com/axel-andrade/finance_planner_api/internal/configuration/http/server"
+	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/server"
+	mongo_database "github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/mongo"
+	redis_database "github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/redis"
+	"github.com/axel-andrade/finance_planner_api/internal/infra/bootstrap"
 	"github.com/joho/godotenv"
 )
 
 /*
-*
-A função init por padrão é a primeira a ser executada pelo go.
-Utilizada para configurar ou fazer um pré carregamento.
-*
-*/
+* The init function is called after all the variable declarations in the package have evaluated their initializers, and
+* those are evaluated only after all the imported packages have been initialized.
+ */
 func init() {
 	if os.Getenv("ENV") != "production" {
 		err := godotenv.Load()
