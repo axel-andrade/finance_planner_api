@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ConfigRoutes(router *gin.Engine, dependencies *bootstrap.Dependencies) *gin.Engine {
+func ConfigRoutes(r *gin.Engine, d *bootstrap.Dependencies) *gin.Engine {
 	// programmatically set swagger info
 	docs.SwaggerInfo.Title = "Swagger Swapp API"
 	docs.SwaggerInfo.Description = "This is a sample server"
@@ -15,12 +15,12 @@ func ConfigRoutes(router *gin.Engine, dependencies *bootstrap.Dependencies) *gin
 	docs.SwaggerInfo.BasePath = "/v2"
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
-	main := router.Group("/")
+	main := r.Group("/")
 	configureDefaultRoutes(main)
 
-	v1 := router.Group("api/v1")
-	configureAuthRoutes(v1, dependencies)
-	configureUsersRoutes(v1, dependencies)
+	v1 := r.Group("api/v1")
+	configureAuthRoutes(v1, d)
+	configureUsersRoutes(v1, d)
 
-	return router
+	return r
 }

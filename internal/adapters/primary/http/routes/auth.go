@@ -1,32 +1,16 @@
 package routes
 
 import (
-	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/controllers"
 	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/middlewares"
 	"github.com/axel-andrade/finance_planner_api/internal/infra/bootstrap"
 	"github.com/gin-gonic/gin"
 )
 
-func configureAuthRoutes(router *gin.RouterGroup, dependencies *bootstrap.Dependencies) {
-	loginCtrl := new(controllers.LoginController)
-	dependencies.Invoke(func(ctrl *controllers.LoginController) {
-		loginCtrl = ctrl
-	})
-
-	logoutCtrl := new(controllers.LogoutController)
-	dependencies.Invoke(func(ctrl *controllers.LogoutController) {
-		logoutCtrl = ctrl
-	})
-
-	signupCtrl := new(controllers.SignUpController)
-	dependencies.Invoke(func(ctrl *controllers.SignUpController) {
-		signupCtrl = ctrl
-	})
-
+func configureAuthRoutes(router *gin.RouterGroup, d *bootstrap.Dependencies) {
 	auth := router.Group("auth")
 	{
-		auth.POST("/signup", middlewares.ValidateRequest("auth/signup"), signupCtrl.Handle)
-		auth.POST("/login", middlewares.ValidateRequest("auth/login"), loginCtrl.Handle)
-		auth.POST("/logout", logoutCtrl.Handle)
+		auth.POST("/signup", middlewares.ValidateRequest("auth/signup"), d.SignUpController.Handle)
+		auth.POST("/login", middlewares.ValidateRequest("auth/login"), d.LoginController.Handle)
+		auth.POST("/logout", d.LogoutController.Handle)
 	}
 }

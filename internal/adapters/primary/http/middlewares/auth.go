@@ -4,23 +4,14 @@ import (
 	"fmt"
 	"net/http"
 
-	redis_repositories "github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/redis/repositories"
 	shared_err "github.com/axel-andrade/finance_planner_api/internal/core/domain/errors"
 	"github.com/axel-andrade/finance_planner_api/internal/infra/bootstrap"
-	"github.com/axel-andrade/finance_planner_api/internal/infra/handlers"
 	"github.com/gin-gonic/gin"
 )
 
 func Authorize(dependencies *bootstrap.Dependencies) gin.HandlerFunc {
-	tokenManagerHandler := new(handlers.TokenManagerHandler)
-	dependencies.Invoke(func(h *handlers.TokenManagerHandler) {
-		tokenManagerHandler = h
-	})
-
-	sessionRepo := new(redis_repositories.SessionRepository)
-	dependencies.Invoke(func(r *redis_repositories.SessionRepository) {
-		sessionRepo = r
-	})
+	tokenManagerHandler := dependencies.TokenManagerHandler
+	sessionRepo := dependencies.SessionRepository
 
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")

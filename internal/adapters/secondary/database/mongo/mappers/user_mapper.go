@@ -10,8 +10,8 @@ type UserMapper struct {
 	BaseMapper
 }
 
-func BuildUserMapper(baseMapper *BaseMapper) *UserMapper {
-	return &UserMapper{BaseMapper: *baseMapper}
+func BuildUserMapper() *UserMapper {
+	return &UserMapper{BaseMapper: BaseMapper{}}
 }
 
 func (m *UserMapper) ToDomain(model models.User) *domain.User {

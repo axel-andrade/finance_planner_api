@@ -1,8 +1,6 @@
 package bootstrap
 
 import (
-	"log"
-
 	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/controllers"
 	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/presenters"
 	common_ptr "github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/presenters/common"
@@ -14,123 +12,101 @@ import (
 	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/logout"
 	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/signup"
 	"github.com/axel-andrade/finance_planner_api/internal/infra/handlers"
-	"go.uber.org/dig"
 )
 
 type Dependencies struct {
-	Container *dig.Container
-}
+	UserMapper *mappers.UserMapper
 
-func (d *Dependencies) Provide(function interface{}) {
-	if err := d.Container.Provide(function); err != nil {
-		log.Fatal(err)
-	}
-}
+	UserRepository    *mongo_repositories.UserRepository
+	SessionRepository *redis_repositories.SessionRepository
 
-func (d *Dependencies) Invoke(function interface{}) {
-	if err := d.Container.Invoke(function); err != nil {
-		log.Fatal(err)
-	}
+	EncrypterHandler    *handlers.EncrypterHandler
+	JsonHandler         *handlers.JsonHandler
+	TokenManagerHandler *handlers.TokenManagerHandler
+
+	SignUpController   *controllers.SignUpController
+	LoginController    *controllers.LoginController
+	LogoutController   *controllers.LogoutController
+	GetUsersController *controllers.GetUsersController
+
+	SignupInteractor   *signup.SignupInteractor
+	LoginInteractor    *login.LoginInteractor
+	LogoutInteractor   *logout.LogoutInteractor
+	GetUsersInteractor *get_users.GetUsersInteractor
+
+	LoginPresenter      *presenters.LoginPresenter
+	SignupPresenter     *presenters.SignupPresenter
+	GetUsersPresenter   *presenters.GetUsersPresenter
+	LogoutPresenter     *presenters.LogoutPresenter
+	UserPresenter       *common_ptr.UserPresenter
+	PaginationPresenter *common_ptr.PaginationPresenter
+	JsonSchemaPresenter *common_ptr.JsonSchemaPresenter
 }
 
 func LoadDependencies() *Dependencies {
-	dependencies := &Dependencies{
-		Container: dig.New(),
-	}
+	d := &Dependencies{}
 
-	loadMappers(dependencies)
-	loadRepositories(dependencies)
-	loadHandlers(dependencies)
-	loadPresenters(dependencies)
-	loadUseCases(dependencies)
-	loadControllers(dependencies)
+	loadMappers(d)
+	loadRepositories(d)
+	loadHandlers(d)
+	loadPresenters(d)
+	loadUseCases(d)
+	loadControllers(d)
 
-	return dependencies
+	return d
 }
 
-func loadMappers(dependencies *Dependencies) {
-	dependencies.Provide(mappers.BuildBaseMapper)
-	dependencies.Provide(mappers.BuildUserMapper)
+func loadMappers(d *Dependencies) {
+	d.UserMapper = mappers.BuildUserMapper()
 }
 
-func loadRepositories(dependencies *Dependencies) {
-	dependencies.Provide(mongo_repositories.BuildBaseRepository)
-	dependencies.Provide(mongo_repositories.BuildUserRepository)
-	dependencies.Provide(redis_repositories.BuildSessionRepository)
+func loadRepositories(d *Dependencies) {
+	d.UserRepository = mongo_repositories.BuildUserRepository(d.UserMapper)
+	d.SessionRepository = redis_repositories.BuildSessionRepository()
 }
 
-func loadHandlers(dependencies *Dependencies) {
-	dependencies.Provide(handlers.BuildEncrypterHandler)
-	dependencies.Provide(handlers.BuildJsonHandler)
-	dependencies.Provide(handlers.BuildTokenManagerHandler)
+func loadHandlers(d *Dependencies) {
+	d.EncrypterHandler = handlers.BuildEncrypterHandler()
+	d.JsonHandler = handlers.BuildJsonHandler()
+	d.TokenManagerHandler = handlers.BuildTokenManagerHandler()
 }
 
-func loadPresenters(dependencies *Dependencies) {
-	dependencies.Provide(common_ptr.BuildUserPresenter)
-	dependencies.Provide(common_ptr.BuildPaginationPresenter)
-	dependencies.Provide(common_ptr.BuildJsonSchemaPresenter)
-	dependencies.Provide(presenters.BuildLoginPresenter)
-	dependencies.Provide(presenters.BuildSignupPresenter)
-	dependencies.Provide(presenters.BuildGetUsersPresenter)
-	dependencies.Provide(presenters.BuildLogoutPresenter)
+func loadPresenters(d *Dependencies) {
+	d.LoginPresenter = presenters.BuildLoginPresenter()
+	d.SignupPresenter = presenters.BuildSignupPresenter()
+	d.GetUsersPresenter = presenters.BuildGetUsersPresenter()
+	d.LogoutPresenter = presenters.BuildLogoutPresenter()
+	d.UserPresenter = common_ptr.BuildUserPresenter()
+	d.PaginationPresenter = common_ptr.BuildPaginationPresenter()
+	d.JsonSchemaPresenter = common_ptr.BuildJsonSchemaPresenter()
 }
 
-func loadControllers(dependencies *Dependencies) {
-	dependencies.Provide(controllers.BuildSignUpController)
-	dependencies.Provide(controllers.BuildLoginController)
-	dependencies.Provide(controllers.BuildLogoutController)
-	dependencies.Provide(controllers.BuildGetUsersController)
+func loadUseCases(d *Dependencies) {
+	d.SignupInteractor = signup.BuildSignUpInteractor(struct {
+		*mongo_repositories.UserRepository
+		*handlers.EncrypterHandler
+	}{d.UserRepository, d.EncrypterHandler})
+
+	d.LoginInteractor = login.BuildLoginInteractor(struct {
+		*redis_repositories.SessionRepository
+		*mongo_repositories.UserRepository
+		*handlers.EncrypterHandler
+		*handlers.TokenManagerHandler
+	}{d.SessionRepository, d.UserRepository, d.EncrypterHandler, d.TokenManagerHandler})
+
+	d.LogoutInteractor = logout.BuildLogoutInteractor(struct {
+		*redis_repositories.SessionRepository
+		*handlers.TokenManagerHandler
+	}{d.SessionRepository, d.TokenManagerHandler})
+
+	d.GetUsersInteractor = get_users.BuildGetUsersInteractor(struct {
+		*mongo_repositories.UserRepository
+	}{d.UserRepository})
 }
 
-func loadUseCases(dependencies *Dependencies) {
-	dependencies.Provide(func(s *redis_repositories.SessionRepository, t *handlers.TokenManagerHandler) *logout.LogoutInteractor {
-		gateway := struct {
-			*redis_repositories.SessionRepository
-			*handlers.TokenManagerHandler
-		}{
-			SessionRepository:   s,
-			TokenManagerHandler: t,
-		}
-
-		return logout.BuildLogoutInteractor(gateway)
-	})
-
-	dependencies.Provide(func(s *redis_repositories.SessionRepository, u *mongo_repositories.UserRepository, e *handlers.EncrypterHandler, t *handlers.TokenManagerHandler) *login.LoginInteractor {
-		gateway := struct {
-			*redis_repositories.SessionRepository
-			*mongo_repositories.UserRepository
-			*handlers.EncrypterHandler
-			*handlers.TokenManagerHandler
-		}{
-			SessionRepository:   s,
-			UserRepository:      u,
-			EncrypterHandler:    e,
-			TokenManagerHandler: t,
-		}
-
-		return login.BuildLoginInteractor(gateway)
-	})
-
-	dependencies.Provide(func(u *mongo_repositories.UserRepository, e *handlers.EncrypterHandler) *signup.SignupInteractor {
-		gateway := struct {
-			*mongo_repositories.UserRepository
-			*handlers.EncrypterHandler
-		}{
-			UserRepository:   u,
-			EncrypterHandler: e,
-		}
-		return signup.BuildSignUpInteractor(gateway)
-	})
-
-	dependencies.Provide(func(u *mongo_repositories.UserRepository) *get_users.GetUsersInteractor {
-		gateway := struct {
-			*redis_repositories.SessionRepository
-			*mongo_repositories.UserRepository
-			*handlers.EncrypterHandler
-			*handlers.TokenManagerHandler
-		}{
-			UserRepository: u,
-		}
-		return get_users.BuildGetUsersInteractor(gateway)
-	})
+func loadControllers(d *Dependencies) {
+	d.SignUpController = controllers.BuildSignUpController(d.SignupInteractor, d.SignupPresenter)
+	d.LoginController = controllers.BuildLoginController(d.LoginInteractor, d.LoginPresenter)
+	d.LogoutController = controllers.BuildLogoutController(d.LogoutInteractor, d.LogoutPresenter)
+	d.GetUsersController = controllers.BuildGetUsersController(d.GetUsersInteractor, d.GetUsersPresenter)
 }
