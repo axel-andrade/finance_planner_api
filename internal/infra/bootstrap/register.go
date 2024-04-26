@@ -4,8 +4,7 @@ import (
 	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/controllers"
 	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/presenters"
 	common_ptr "github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/presenters/common"
-	"github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/mongo/mappers"
-	mongo_repositories "github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/mongo/repositories"
+	pg_repositories "github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/pg/repositories"
 	redis_repositories "github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/redis/repositories"
 	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/get_users"
 	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/login"
@@ -15,9 +14,7 @@ import (
 )
 
 type Dependencies struct {
-	UserMapper *mappers.UserMapper
-
-	UserRepository    *mongo_repositories.UserRepository
+	UserRepository    *pg_repositories.UserRepository
 	SessionRepository *redis_repositories.SessionRepository
 
 	EncrypterHandler    *handlers.EncrypterHandler
@@ -46,7 +43,6 @@ type Dependencies struct {
 func LoadDependencies() *Dependencies {
 	d := &Dependencies{}
 
-	loadMappers(d)
 	loadRepositories(d)
 	loadHandlers(d)
 	loadPresenters(d)
@@ -56,12 +52,8 @@ func LoadDependencies() *Dependencies {
 	return d
 }
 
-func loadMappers(d *Dependencies) {
-	d.UserMapper = mappers.BuildUserMapper()
-}
-
 func loadRepositories(d *Dependencies) {
-	d.UserRepository = mongo_repositories.BuildUserRepository(d.UserMapper)
+	d.UserRepository = pg_repositories.BuildUserRepository()
 	d.SessionRepository = redis_repositories.BuildSessionRepository()
 }
 
@@ -83,13 +75,13 @@ func loadPresenters(d *Dependencies) {
 
 func loadUseCases(d *Dependencies) {
 	d.SignupInteractor = signup.BuildSignUpInteractor(struct {
-		*mongo_repositories.UserRepository
+		*pg_repositories.UserRepository
 		*handlers.EncrypterHandler
 	}{d.UserRepository, d.EncrypterHandler})
 
 	d.LoginInteractor = login.BuildLoginInteractor(struct {
 		*redis_repositories.SessionRepository
-		*mongo_repositories.UserRepository
+		*pg_repositories.UserRepository
 		*handlers.EncrypterHandler
 		*handlers.TokenManagerHandler
 	}{d.SessionRepository, d.UserRepository, d.EncrypterHandler, d.TokenManagerHandler})
@@ -100,7 +92,7 @@ func loadUseCases(d *Dependencies) {
 	}{d.SessionRepository, d.TokenManagerHandler})
 
 	d.GetUsersInteractor = get_users.BuildGetUsersInteractor(struct {
-		*mongo_repositories.UserRepository
+		*pg_repositories.UserRepository
 	}{d.UserRepository})
 }
 

@@ -6,8 +6,8 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func configureDefaultRoutes(router *gin.RouterGroup) {
-	main := router.Group("/")
+func configureDefaultRoutes(r *gin.RouterGroup) {
+	main := r.Group("/")
 	{
 		main.GET("/healthcheck", func(c *gin.Context) {
 			c.JSON(200, gin.H{"status": "OK"})

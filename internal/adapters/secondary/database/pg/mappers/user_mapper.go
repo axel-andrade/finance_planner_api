@@ -1,17 +1,13 @@
 package mappers
 
 import (
-	"github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/mongo/models"
+	"github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/pg/models"
 	"github.com/axel-andrade/finance_planner_api/internal/core/domain"
 	value_object "github.com/axel-andrade/finance_planner_api/internal/core/domain/value_objects"
 )
 
 type UserMapper struct {
 	BaseMapper
-}
-
-func BuildUserMapper() *UserMapper {
-	return &UserMapper{BaseMapper: BaseMapper{}}
 }
 
 func (m *UserMapper) ToDomain(model models.User) *domain.User {
@@ -23,11 +19,19 @@ func (m *UserMapper) ToDomain(model models.User) *domain.User {
 	}
 }
 
-func (m *UserMapper) ToPersistence(entity domain.User) models.User {
-	return models.User{
-		Base:     *m.BaseMapper.toPersistence(entity.Base),
-		Email:    entity.Email.Value,
-		Name:     entity.Name.Value,
-		Password: entity.Password.Value,
+func (m *UserMapper) ToPersistence(e domain.User) *models.User {
+	return &models.User{
+		Base:     *m.BaseMapper.toPersistence(e.Base),
+		Email:    e.Email.Value,
+		Name:     e.Name.Value,
+		Password: e.Password.Value,
 	}
+}
+
+func (m *UserMapper) ToUpdate(model models.User, e domain.User) *models.User {
+	model.Email = e.Email.Value
+	model.Name = e.Name.Value
+	model.Password = e.Password.Value
+
+	return &model
 }

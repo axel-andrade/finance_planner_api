@@ -1,6 +1,8 @@
 package domain
 
-import "time"
+import (
+	"time"
+)
 
 type Base struct {
 	ID        UniqueEntityID `json:"id"`

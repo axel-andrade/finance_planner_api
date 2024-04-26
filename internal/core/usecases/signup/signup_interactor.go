@@ -40,7 +40,7 @@ func (bs *SignupInteractor) Execute(input SignupInputDTO) (*SignupOutputDTO, err
 
 	bs.Gateway.StartTransaction()
 
-	result, err := bs.Gateway.CreateUser(*user)
+	result, err := bs.Gateway.CreateUser(user)
 	if err != nil {
 		bs.Gateway.CancelTransaction()
 		return nil, err

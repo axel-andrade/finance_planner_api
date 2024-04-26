@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/server"
-	mongo_database "github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/mongo"
+	pg_database "github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/pg"
 	redis_database "github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/redis"
 	"github.com/axel-andrade/finance_planner_api/internal/infra/bootstrap"
 	"github.com/joho/godotenv"
@@ -23,7 +23,7 @@ func init() {
 		}
 	}
 
-	mongo_database.ConnectDB()
+	pg_database.ConnectDB()
 	redis_database.ConnectRedisDB()
 }
 

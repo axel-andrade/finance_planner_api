@@ -4,7 +4,7 @@ import "github.com/axel-andrade/finance_planner_api/internal/core/domain"
 
 type SignupGateway interface {
 	CancelTransaction() error
-	CreateUser(user domain.User) (*domain.User, error)
+	CreateUser(user *domain.User) (*domain.User, error)
 	CommitTransaction() error
 	EncryptPassword(p string) (string, error)
 	FindUserByEmail(email string) (*domain.User, error)
