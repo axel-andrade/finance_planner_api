@@ -1,6 +1,7 @@
-package bootstrap
+package infra
 
 import (
+	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/handlers"
 	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/controllers"
 	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/presenters"
 	common_ptr "github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/presenters/common"
@@ -10,7 +11,6 @@ import (
 	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/login"
 	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/logout"
 	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/signup"
-	"github.com/axel-andrade/finance_planner_api/internal/infra/handlers"
 )
 
 type Dependencies struct {

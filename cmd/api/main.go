@@ -7,7 +7,7 @@ import (
 	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/server"
 	pg_database "github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/pg"
 	redis_database "github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/redis"
-	"github.com/axel-andrade/finance_planner_api/internal/infra/bootstrap"
+	"github.com/axel-andrade/finance_planner_api/internal/infra"
 	"github.com/joho/godotenv"
 )
 
@@ -28,9 +28,9 @@ func init() {
 }
 
 func main() {
-	dependecies := bootstrap.LoadDependencies()
+	d := infra.LoadDependencies()
 
-	server := server.NewServer(os.Getenv("PORT"))
-	server.AddRoutes(dependecies)
-	server.Run()
+	s := server.NewServer(os.Getenv("PORT"))
+	s.AddRoutes(d)
+	s.Run()
 }

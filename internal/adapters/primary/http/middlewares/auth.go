@@ -5,11 +5,11 @@ import (
 	"net/http"
 
 	shared_err "github.com/axel-andrade/finance_planner_api/internal/core/domain/errors"
-	"github.com/axel-andrade/finance_planner_api/internal/infra/bootstrap"
+	"github.com/axel-andrade/finance_planner_api/internal/infra"
 	"github.com/gin-gonic/gin"
 )
 
-func Authorize(dependencies *bootstrap.Dependencies) gin.HandlerFunc {
+func Authorize(dependencies *infra.Dependencies) gin.HandlerFunc {
 	tokenManagerHandler := dependencies.TokenManagerHandler
 	sessionRepo := dependencies.SessionRepository
 

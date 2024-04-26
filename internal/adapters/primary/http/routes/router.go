@@ -2,11 +2,11 @@ package routes
 
 import (
 	"github.com/axel-andrade/finance_planner_api/docs"
-	"github.com/axel-andrade/finance_planner_api/internal/infra/bootstrap"
+	"github.com/axel-andrade/finance_planner_api/internal/infra"
 	"github.com/gin-gonic/gin"
 )
 
-func ConfigRoutes(r *gin.Engine, d *bootstrap.Dependencies) *gin.Engine {
+func ConfigRoutes(r *gin.Engine, d *infra.Dependencies) *gin.Engine {
 	// programmatically set swagger info
 	docs.SwaggerInfo.Title = "Swagger Swapp API"
 	docs.SwaggerInfo.Description = "This is a sample server"

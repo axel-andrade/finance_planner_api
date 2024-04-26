@@ -9,7 +9,7 @@ import (
 	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/middlewares"
 	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/routes"
 	"github.com/axel-andrade/finance_planner_api/internal/core/domain/constants"
-	"github.com/axel-andrade/finance_planner_api/internal/infra/bootstrap"
+	"github.com/axel-andrade/finance_planner_api/internal/infra"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-contrib/requestid"
@@ -68,8 +68,8 @@ func NewServer(port string) Server {
 	}
 }
 
-func (s *Server) AddRoutes(dependencies *bootstrap.Dependencies) {
-	router := routes.ConfigRoutes(s.server.Handler.(*gin.Engine), dependencies)
+func (s *Server) AddRoutes(d *infra.Dependencies) {
+	router := routes.ConfigRoutes(s.server.Handler.(*gin.Engine), d)
 	router.SetTrustedProxies([]string{"127.0.0.1"})
 }
 
