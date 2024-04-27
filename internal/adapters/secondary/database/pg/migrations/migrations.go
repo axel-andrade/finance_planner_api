@@ -16,4 +16,9 @@ func RunMigrations(db *gorm.DB) {
 		RollbackCreateCategoriesTable(db)
 		log.Fatal(err)
 	}
+
+	if err := MigrateCreateExpensesTable(db); err != nil {
+		RollbackCreateExpensesTable(db)
+		log.Fatal(err)
+	}
 }
