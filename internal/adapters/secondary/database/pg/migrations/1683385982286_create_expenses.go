@@ -13,7 +13,7 @@ func MigrateCreateExpensesTable(tx *gorm.DB) error {
 			return err
 		}
 
-		fmt.Println("Migration executed: 1683385982285_create_expenses")
+		fmt.Println("Migration executed: 1683385982286_create_expenses")
 	}
 
 	return nil

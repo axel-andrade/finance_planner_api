@@ -1,4 +1,4 @@
-INSERT INTO categories (name, created_at, updated_at) VALUES
+INSERT INTO expense_types (name, created_at, updated_at) VALUES
 ('Rent', now(), now()),
 ('Water bill', now(), now()),
 ('Electricity bill', now(), now()),
