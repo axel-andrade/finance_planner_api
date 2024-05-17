@@ -7,9 +7,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func MigrateCreateExpensesTable(tx *gorm.DB) error {
-	if !tx.Migrator().HasTable(&pgmodels.Expense{}) {
-		if err := tx.AutoMigrate(&pgmodels.Expense{}); err != nil {
+func MigrateCreateTransactionTable(tx *gorm.DB) error {
+	if !tx.Migrator().HasTable(&pgmodels.Transaction{}) {
+		if err := tx.AutoMigrate(&pgmodels.Transaction{}); err != nil {
 			return err
 		}
 
@@ -19,8 +19,8 @@ func MigrateCreateExpensesTable(tx *gorm.DB) error {
 	return nil
 }
 
-func RollbackCreateExpensesTable(tx *gorm.DB) error {
-	err := tx.Migrator().DropTable(&pgmodels.Expense{})
+func RollbackCreateTransactionTable(tx *gorm.DB) error {
+	err := tx.Migrator().DropTable(&pgmodels.Transaction{})
 	if err != nil {
 		return err
 	}
