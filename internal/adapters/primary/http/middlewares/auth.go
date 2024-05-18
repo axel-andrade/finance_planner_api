@@ -41,7 +41,7 @@ func Authorize(dependencies *infra.Dependencies) gin.HandlerFunc {
 		}
 
 		// TODO: verificar se o usuario existe no banco de dados
-		c.Set("user-id", userId)
+		c.Set("user_id", userId)
 
 		c.Next()
 	}

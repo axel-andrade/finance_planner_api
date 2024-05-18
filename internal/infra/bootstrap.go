@@ -7,37 +7,43 @@ import (
 	common_ptr "github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/presenters/common"
 	pg_repositories "github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/pg/repositories"
 	redis_repositories "github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/redis/repositories"
+	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/auth/login"
+	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/auth/logout"
+	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/auth/signup"
 	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/get_users"
-	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/login"
-	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/logout"
-	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/signup"
+	create_transaction "github.com/axel-andrade/finance_planner_api/internal/core/usecases/transactions/create"
 )
 
 type Dependencies struct {
-	UserRepository    *pg_repositories.UserRepository
-	SessionRepository *redis_repositories.SessionRepository
+	UserRepository        *pg_repositories.UserRepository
+	CategoryRepository    *pg_repositories.CategoryRepository
+	TransactionRepository *pg_repositories.TransactionRepository
+	SessionRepository     *redis_repositories.SessionRepository
 
 	EncrypterHandler    *handlers.EncrypterHandler
 	JsonHandler         *handlers.JsonHandler
 	TokenManagerHandler *handlers.TokenManagerHandler
 
-	SignUpController   *controllers.SignUpController
-	LoginController    *controllers.LoginController
-	LogoutController   *controllers.LogoutController
-	GetUsersController *controllers.GetUsersController
+	SignUpController            *controllers.SignUpController
+	LoginController             *controllers.LoginController
+	LogoutController            *controllers.LogoutController
+	GetUsersController          *controllers.GetUsersController
+	CreateTransactionController *controllers.CreateTransactionController
 
-	SignupInteractor   *signup.SignupInteractor
-	LoginInteractor    *login.LoginInteractor
-	LogoutInteractor   *logout.LogoutInteractor
-	GetUsersInteractor *get_users.GetUsersInteractor
+	SignupInteractor         *signup.SignupInteractor
+	LoginInteractor          *login.LoginInteractor
+	LogoutInteractor         *logout.LogoutInteractor
+	GetUsersInteractor       *get_users.GetUsersInteractor
+	CreateTransactionUsecase *create_transaction.CreateTransactionUC
 
-	LoginPresenter      *presenters.LoginPresenter
-	SignupPresenter     *presenters.SignupPresenter
-	GetUsersPresenter   *presenters.GetUsersPresenter
-	LogoutPresenter     *presenters.LogoutPresenter
-	UserPresenter       *common_ptr.UserPresenter
-	PaginationPresenter *common_ptr.PaginationPresenter
-	JsonSchemaPresenter *common_ptr.JsonSchemaPresenter
+	LoginPresenter             *presenters.LoginPresenter
+	SignupPresenter            *presenters.SignupPresenter
+	GetUsersPresenter          *presenters.GetUsersPresenter
+	LogoutPresenter            *presenters.LogoutPresenter
+	UserPresenter              *common_ptr.UserPresenter
+	PaginationPresenter        *common_ptr.PaginationPresenter
+	JsonSchemaPresenter        *common_ptr.JsonSchemaPresenter
+	CreateTransactionPresenter *presenters.CreateTransactionPresenter
 }
 
 func LoadDependencies() *Dependencies {
@@ -54,6 +60,8 @@ func LoadDependencies() *Dependencies {
 
 func loadRepositories(d *Dependencies) {
 	d.UserRepository = pg_repositories.BuildUserRepository()
+	d.CategoryRepository = pg_repositories.BuildCategoryRepository()
+	d.TransactionRepository = pg_repositories.BuildTransactionRepository()
 	d.SessionRepository = redis_repositories.BuildSessionRepository()
 }
 
@@ -71,6 +79,7 @@ func loadPresenters(d *Dependencies) {
 	d.UserPresenter = common_ptr.BuildUserPresenter()
 	d.PaginationPresenter = common_ptr.BuildPaginationPresenter()
 	d.JsonSchemaPresenter = common_ptr.BuildJsonSchemaPresenter()
+	d.CreateTransactionPresenter = presenters.BuildCreateTransactionPresenter()
 }
 
 func loadUseCases(d *Dependencies) {
@@ -94,6 +103,12 @@ func loadUseCases(d *Dependencies) {
 	d.GetUsersInteractor = get_users.BuildGetUsersInteractor(struct {
 		*pg_repositories.UserRepository
 	}{d.UserRepository})
+
+	d.CreateTransactionUsecase = create_transaction.BuildCreateTransactionUC(struct {
+		*pg_repositories.UserRepository
+		*pg_repositories.CategoryRepository
+		*pg_repositories.TransactionRepository
+	}{d.UserRepository, d.CategoryRepository, d.TransactionRepository})
 }
 
 func loadControllers(d *Dependencies) {

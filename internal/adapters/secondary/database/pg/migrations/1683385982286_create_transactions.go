@@ -8,8 +8,8 @@ import (
 )
 
 func MigrateCreateTransactionTable(tx *gorm.DB) error {
-	if !tx.Migrator().HasTable(&pgmodels.Transaction{}) {
-		if err := tx.AutoMigrate(&pgmodels.Transaction{}); err != nil {
+	if !tx.Migrator().HasTable(&pgmodels.TransactionModel{}) {
+		if err := tx.AutoMigrate(&pgmodels.TransactionModel{}); err != nil {
 			return err
 		}
 
@@ -20,7 +20,7 @@ func MigrateCreateTransactionTable(tx *gorm.DB) error {
 }
 
 func RollbackCreateTransactionTable(tx *gorm.DB) error {
-	err := tx.Migrator().DropTable(&pgmodels.Transaction{})
+	err := tx.Migrator().DropTable(&pgmodels.TransactionModel{})
 	if err != nil {
 		return err
 	}

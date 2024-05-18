@@ -11,13 +11,14 @@ type TransactionMapper struct {
 	BaseMapper
 }
 
-func (m *TransactionMapper) ToDomain(model models.Transaction) *domain.Transaction {
+func (m *TransactionMapper) ToDomain(model models.TransactionModel) *domain.Transaction {
 	return &domain.Transaction{
 		Base:          *m.BaseMapper.toDomain(model.Base),
 		UserID:        model.UserID,
 		CategoryID:    model.CategoryID,
-		Amount:        model.Amount,
+		Status:        model.Status,
 		Type:          model.Type,
+		Amount:        model.Amount,
 		Date:          model.Date.String(),
 		IsRecurring:   model.IsRecurring,
 		IsInstallment: model.IsInstallment,
@@ -27,15 +28,16 @@ func (m *TransactionMapper) ToDomain(model models.Transaction) *domain.Transacti
 	}
 }
 
-func (m *TransactionMapper) ToPersistence(e domain.Transaction) *models.Transaction {
+func (m *TransactionMapper) ToPersistence(e domain.Transaction) *models.TransactionModel {
 	d, _ := time.Parse("2006-01-02", e.Date)
 
-	return &models.Transaction{
+	return &models.TransactionModel{
 		Base:          *m.BaseMapper.toPersistence(e.Base),
 		UserID:        e.UserID,
 		CategoryID:    e.CategoryID,
-		Amount:        e.Amount,
+		Status:        e.Status,
 		Type:          e.Type,
+		Amount:        e.Amount,
 		Date:          d,
 		IsRecurring:   e.IsRecurring,
 		IsInstallment: e.IsInstallment,
@@ -45,17 +47,21 @@ func (m *TransactionMapper) ToPersistence(e domain.Transaction) *models.Transact
 	}
 }
 
-func (m *TransactionMapper) ToUpdate(model models.Transaction, e domain.Transaction) *models.Transaction {
+func (m *TransactionMapper) ToUpdate(model models.TransactionModel, e domain.Transaction) *models.TransactionModel {
 	if e.CategoryID != "" {
 		model.CategoryID = e.CategoryID
 	}
 
-	if e.Amount != 0 {
-		model.Amount = e.Amount
-	}
-
 	if e.Type != "" {
 		model.Type = e.Type
+	}
+
+	if e.Status != "" {
+		model.Status = e.Status
+	}
+
+	if e.Amount != 0 {
+		model.Amount = e.Amount
 	}
 
 	if e.Date != "" {

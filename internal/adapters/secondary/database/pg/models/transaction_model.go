@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type Transaction struct {
+type TransactionModel struct {
 	Base
 	UserID        string    `gorm:"type:uuid;not null" json:"user_id"`
 	User          User      `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"user"`

@@ -3,7 +3,7 @@ package controllers
 import (
 	common_adapters "github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/common"
 	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/presenters"
-	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/login"
+	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/auth/login"
 	"github.com/gin-gonic/gin"
 )
 

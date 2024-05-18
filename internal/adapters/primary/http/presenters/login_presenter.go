@@ -6,7 +6,7 @@ import (
 	common_adapters "github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/common"
 	common_ptr "github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/presenters/common"
 	shared_err "github.com/axel-andrade/finance_planner_api/internal/core/domain/errors"
-	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/login"
+	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/auth/login"
 )
 
 type LoginOutputFormatted struct {

@@ -9,10 +9,16 @@ const (
 	TransactionTypeExpense = "expense"
 )
 
+const (
+	TransactionStatusPending = "pending"
+	TransactionStatusPaid    = "paid"
+)
+
 type Transaction struct {
 	Base
 	UserID        string `json:"user_id"`
 	CategoryID    string `json:"category_id"`
+	Status        string `json:"status"`
 	Type          string `json:"type"`
 	Description   string `json:"description"`
 	Date          string `json:"date"`
@@ -23,10 +29,11 @@ type Transaction struct {
 	Amount        int32  `json:"amount"`
 }
 
-func NewTransaction(userID, categoryId, description, date, monthYear string, transactionType string, isRecurring, isInstallment bool, installment, amount int32) (*Transaction, error) {
+func NewTransaction(userID, categoryId, status, transactionType, description, date, monthYear string, isRecurring, isInstallment bool, installment, amount int32) (*Transaction, error) {
 	i := &Transaction{
 		UserID:        userID,
 		CategoryID:    categoryId,
+		Status:        status,
 		Type:          transactionType,
 		Description:   description,
 		Date:          date,
@@ -47,6 +54,15 @@ func NewTransaction(userID, categoryId, description, date, monthYear string, tra
 func (t *Transaction) validate() error {
 	if t.Amount <= 0 {
 		return fmt.Errorf("amount must be greater than 0")
+	}
+
+	validTransactionsStatus := map[string]bool{
+		TransactionStatusPending: true,
+		TransactionStatusPaid:    true,
+	}
+
+	if !validTransactionsStatus[t.Status] {
+		return fmt.Errorf("invalid status")
 	}
 
 	validTransactionTypes := map[string]bool{

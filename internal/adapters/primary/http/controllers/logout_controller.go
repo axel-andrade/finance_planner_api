@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/presenters"
-	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/logout"
-	interactor "github.com/axel-andrade/finance_planner_api/internal/core/usecases/logout"
+	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/auth/logout"
+	interactor "github.com/axel-andrade/finance_planner_api/internal/core/usecases/auth/logout"
 	"github.com/gin-gonic/gin"
 )
 

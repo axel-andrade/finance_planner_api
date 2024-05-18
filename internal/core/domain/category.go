@@ -7,48 +7,46 @@ const (
 	CategoryIncomeType  = "income"
 )
 
-type CategoryName string
-
 const (
-	ExpenseRent                CategoryName = "rent"
-	ExpenseWaterBill           CategoryName = "water_bill"
-	ExpenseElectricityBill     CategoryName = "electricity_bill"
-	ExpenseGroceries           CategoryName = "groceries"
-	ExpenseRestaurantsDelivery CategoryName = "restaurants_delivery"
-	ExpenseTransportation      CategoryName = "transportation"
-	ExpenseHealth              CategoryName = "health"
-	ExpenseEducation           CategoryName = "education"
-	ExpenseEntertainment       CategoryName = "entertainment"
-	ExpenseClothing            CategoryName = "clothing"
-	ExpenseBeauty              CategoryName = "beauty"
-	ExpenseGifts               CategoryName = "gifts"
-	ExpenseVehicle             CategoryName = "vehicle"
-	ExpenseHome                CategoryName = "home"
-	ExpenseInsurance           CategoryName = "insurance"
-	ExpenseTaxes               CategoryName = "taxes"
-	ExpenseInvestments         CategoryName = "investments"
-	ExpenseSavings             CategoryName = "savings"
-	ExpenseDebts               CategoryName = "debts"
-	ExpenseLoans               CategoryName = "loans"
-	ExpenseCreditCard          CategoryName = "credit_card"
-	ExpenseOthersExpense       CategoryName = "others_expense"
+	ExpenseRent                = "rent"
+	ExpenseWaterBill           = "water_bill"
+	ExpenseElectricityBill     = "electricity_bill"
+	ExpenseGroceries           = "groceries"
+	ExpenseRestaurantsDelivery = "restaurants_delivery"
+	ExpenseTransportation      = "transportation"
+	ExpenseHealth              = "health"
+	ExpenseEducation           = "education"
+	ExpenseEntertainment       = "entertainment"
+	ExpenseClothing            = "clothing"
+	ExpenseBeauty              = "beauty"
+	ExpenseGifts               = "gifts"
+	ExpenseVehicle             = "vehicle"
+	ExpenseHome                = "home"
+	ExpenseInsurance           = "insurance"
+	ExpenseTaxes               = "taxes"
+	ExpenseInvestments         = "investments"
+	ExpenseSavings             = "savings"
+	ExpenseDebts               = "debts"
+	ExpenseLoans               = "loans"
+	ExpenseCreditCard          = "credit_card"
+	ExpenseOthersExpense       = "others_expense"
 )
 
 const (
-	IncomeSalary       CategoryName = "salary"
-	IncomeInvestments  CategoryName = "investments"
-	IncomeFreelancer   CategoryName = "freelancer"
-	IncomeBonus        CategoryName = "bonus"
-	IncomeOthersIncome CategoryName = "others_income"
+	IncomeSalary       = "salary"
+	IncomeInvestments  = "investments"
+	IncomeFreelancer   = "freelancer"
+	IncomeBonus        = "bonus"
+	IncomeOthersIncome = "others_income"
 )
 
 type Category struct {
 	Base
-	Type string       `json:"type"`
-	Name CategoryName `json:"name"`
+	Type string `json:"type"`
+	Name string `json:"name"`
 }
 
-func BuildNewCategory(categoryType string, name CategoryName) (*Category, error) {
+func BuildNewCategory(categoryType, name string) (*Category, error) {
 	c := &Category{
 		Type: categoryType,
 		Name: name,
@@ -71,7 +69,7 @@ func (c *Category) validate() error {
 		return fmt.Errorf("invalid category type")
 	}
 
-	validExpenseCategories := map[CategoryName]bool{
+	validExpenseCategories := map[string]bool{
 		ExpenseRent:                true,
 		ExpenseWaterBill:           true,
 		ExpenseElectricityBill:     true,
@@ -96,7 +94,7 @@ func (c *Category) validate() error {
 		ExpenseOthersExpense:       true,
 	}
 
-	validIncomeCategories := map[CategoryName]bool{
+	validIncomeCategories := map[string]bool{
 		IncomeSalary:       true,
 		IncomeInvestments:  true,
 		IncomeFreelancer:   true,

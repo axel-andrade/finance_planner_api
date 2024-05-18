@@ -3,9 +3,9 @@ package create_transaction
 import "github.com/axel-andrade/finance_planner_api/internal/core/domain"
 
 type CreateTransactionGateway interface {
-	GetUser(userID string) (*domain.User, error)
-	GetCategory(categoryID string) (*domain.Category, error)
-	CreateTransaction(transaction domain.Transaction) (*domain.Transaction, error)
+	FindUserByID(userID string) (*domain.User, error)
+	FindCategoryByID(categoryID string) (*domain.Category, error)
+	CreateTransaction(transaction *domain.Transaction) (*domain.Transaction, error)
 }
 
 type CreateTransactionInputDTO struct {
@@ -14,7 +14,6 @@ type CreateTransactionInputDTO struct {
 	Type          string `json:"type"`
 	Description   string `json:"description"`
 	Date          string `json:"date"`
-	MonthYear     string `json:"month_year"`
 	IsRecurring   bool   `json:"is_recurring"`
 	IsInstallment bool   `json:"is_installment"`
 	Installment   int32  `json:"installment"`

@@ -7,17 +7,17 @@ import (
 	shared_err "github.com/axel-andrade/finance_planner_api/internal/core/domain/errors"
 )
 
-type CreateTransactionInteractor struct {
+type CreateTransactionUC struct {
 	Gateway CreateTransactionGateway
 }
 
-func BuildSignUpInteractor(g CreateTransactionGateway) *CreateTransactionInteractor {
-	return &CreateTransactionInteractor{g}
+func BuildCreateTransactionUC(g CreateTransactionGateway) *CreateTransactionUC {
+	return &CreateTransactionUC{g}
 }
 
-func (bs *CreateTransactionInteractor) Execute(input CreateTransactionInputDTO) (*CreateTransactionOutputDTO, error) {
+func (bs *CreateTransactionUC) Execute(input CreateTransactionInputDTO) (*CreateTransactionOutputDTO, error) {
 	log.Println("info: searching user with id: ", input.UserID)
-	u, err := bs.Gateway.GetUser(input.UserID)
+	u, err := bs.Gateway.FindUserByID(input.UserID)
 
 	if err != nil {
 		log.Println("error: error during user search: ", err)
@@ -30,7 +30,7 @@ func (bs *CreateTransactionInteractor) Execute(input CreateTransactionInputDTO) 
 	}
 
 	log.Println("info: searching category with id: ", input.CategoryID)
-	c, err := bs.Gateway.GetCategory(input.CategoryID)
+	c, err := bs.Gateway.FindCategoryByID(input.CategoryID)
 
 	if err != nil {
 		log.Println("error: error during category search: ", err)
@@ -47,14 +47,18 @@ func (bs *CreateTransactionInteractor) Execute(input CreateTransactionInputDTO) 
 		return nil, shared_err.NewInvalidOperationError(shared_err.CATEGORY_NOT_BELONGS_TRANSACTION_TYPE)
 	}
 
+	log.Println("info: extracting month and year from date")
+	monthYear := input.Date[0:7]
+
 	log.Println("info: building transaction entity")
 	t, err := domain.NewTransaction(
 		input.UserID,
 		input.CategoryID,
+		domain.TransactionStatusPending,
+		input.Type,
 		input.Description,
 		input.Date,
-		input.MonthYear,
-		input.Type,
+		monthYear,
 		input.IsRecurring,
 		input.IsInstallment,
 		input.Installment,
@@ -67,12 +71,13 @@ func (bs *CreateTransactionInteractor) Execute(input CreateTransactionInputDTO) 
 	}
 
 	log.Println("info: creating transaction")
-	result, err := bs.Gateway.CreateTransaction(*t)
+	result, err := bs.Gateway.CreateTransaction(t)
 
 	if err != nil {
 		log.Println("error: error during transaction creation: ", err)
 		return nil, err
 	}
 
+	log.Println("info: transaction created successfully")
 	return &CreateTransactionOutputDTO{Transaction: *result}, nil
 }

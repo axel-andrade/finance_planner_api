@@ -20,6 +20,7 @@ func ConfigRoutes(r *gin.Engine, d *infra.Dependencies) *gin.Engine {
 
 	v1 := r.Group("api/v1")
 	configureAuthRoutes(v1, d)
+	configureTransactionsRoutes(v1, d)
 	configureUsersRoutes(v1, d)
 
 	return r

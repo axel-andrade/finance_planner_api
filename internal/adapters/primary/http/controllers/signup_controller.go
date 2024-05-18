@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/presenters"
-	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/signup"
+	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/auth/signup"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,5 +37,4 @@ func (ctrl *SignUpController) Handle(c *gin.Context) {
 	output := ctrl.Presenter.Show(result, err)
 
 	c.JSON(output.StatusCode, output.Data)
-
 }
