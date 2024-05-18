@@ -2,11 +2,9 @@ package domain
 
 import "fmt"
 
-type CategoryType string
-
 const (
-	CategoryExpenseType CategoryType = "expense"
-	CategoryIncomeType  CategoryType = "income"
+	CategoryExpenseType = "expense"
+	CategoryIncomeType  = "income"
 )
 
 type CategoryName string
@@ -46,11 +44,11 @@ const (
 
 type Category struct {
 	Base
-	Type CategoryType `json:"type"`
+	Type string       `json:"type"`
 	Name CategoryName `json:"name"`
 }
 
-func BuildNewCategory(categoryType CategoryType, name CategoryName) (*Category, error) {
+func BuildNewCategory(categoryType string, name CategoryName) (*Category, error) {
 	c := &Category{
 		Type: categoryType,
 		Name: name,
@@ -64,7 +62,7 @@ func BuildNewCategory(categoryType CategoryType, name CategoryName) (*Category, 
 }
 
 func (c *Category) validate() error {
-	validCategoryTypes := map[CategoryType]bool{
+	validCategoryTypes := map[string]bool{
 		CategoryExpenseType: true,
 		CategoryIncomeType:  true,
 	}

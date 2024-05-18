@@ -1,10 +1,11 @@
 package shared_err
 
 const (
-	INCORRECT_PASSWORD = "incorrect password"
-	INVALID_EMAIL      = "invalid email"
-	INVALID_PASSWORD   = "invalid password"
-	NAME_IS_EMPTY      = "name is empty"
+	INCORRECT_PASSWORD                    = "incorrect password"
+	INVALID_EMAIL                         = "invalid email"
+	INVALID_PASSWORD                      = "invalid password"
+	NAME_IS_EMPTY                         = "name is empty"
+	CATEGORY_NOT_BELONGS_TRANSACTION_TYPE = "category type does not match transaction type"
 )
 
 type InvalidOperationError struct {

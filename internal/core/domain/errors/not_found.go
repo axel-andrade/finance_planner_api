@@ -1,7 +1,8 @@
 package shared_err
 
 const (
-	USER_NOT_FOUND = "user not found"
+	USER_NOT_FOUND     = "user not found"
+	CATEGORY_NOT_FOUND = "category not found"
 )
 
 type NotFoundError struct {
