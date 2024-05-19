@@ -3,10 +3,10 @@ package login
 import "github.com/axel-andrade/finance_planner_api/internal/core/domain"
 
 type LoginGateway interface {
-	CreateAuth(userid domain.UniqueEntityID, td *domain.TokenDetails) error
+	CreateAuth(userid string, td *domain.TokenDetails) error
 	CompareHashAndPassword(hash string, p string) error
 	FindUserByEmail(email string) (*domain.User, error)
-	GenerateToken(userid domain.UniqueEntityID) (*domain.TokenDetails, error)
+	GenerateToken(userid string) (*domain.TokenDetails, error)
 }
 
 type LoginInputDTO struct {

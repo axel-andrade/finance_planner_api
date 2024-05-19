@@ -32,7 +32,7 @@ func Authorize(dependencies *infra.Dependencies) gin.HandlerFunc {
 			return
 		}
 
-		userId, err := sessionRepo.GetAuth(tokenAuth)
+		userID, err := sessionRepo.GetAuth(tokenAuth)
 		if err != nil {
 			fmt.Println("error in get auth: ", err.Error())
 			c.JSON(http.StatusUnauthorized, gin.H{"error": shared_err.UNAUTHORIZED})
@@ -41,7 +41,7 @@ func Authorize(dependencies *infra.Dependencies) gin.HandlerFunc {
 		}
 
 		// TODO: verificar se o usuario existe no banco de dados
-		c.Set("user_id", userId)
+		c.Set("userID", userID)
 
 		c.Next()
 	}

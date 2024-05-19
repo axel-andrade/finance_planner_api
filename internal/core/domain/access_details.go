@@ -1,8 +1,8 @@
 package domain
 
 type AccessDetails struct {
-	AccessUUID string         `json:"access_uuid"`
-	UserID     UniqueEntityID `json:"user_id"`
+	AccessUUID string `json:"access_uuid"`
+	UserID     string `json:"user_id"`
 }
 
 /**

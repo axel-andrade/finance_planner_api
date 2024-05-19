@@ -7,11 +7,11 @@ import (
 )
 
 type UserFormatted struct {
-	ID        domain.UniqueEntityID `json:"id" example:"123" description:"O ID único do usuário"`
-	Email     string                `json:"email" example:"johndoe@example.com" description:"O endereço de email do usuário"`
-	Name      string                `json:"name" example:"John Doe" description:"O nome do usuário"`
-	CreatedAt time.Time             `json:"created_at" example:"2022-01-01T00:00:00Z" description:"A data e hora de criação do usuário"`
-	UpdatedAt time.Time             `json:"updated_at" example:"2022-01-01T01:00:00Z" description:"A data e hora da última atualização do usuário"`
+	ID        string    `json:"id" example:"123" description:"O ID único do usuário"`
+	Email     string    `json:"email" example:"johndoe@example.com" description:"O endereço de email do usuário"`
+	Name      string    `json:"name" example:"John Doe" description:"O nome do usuário"`
+	CreatedAt time.Time `json:"created_at" example:"2022-01-01T00:00:00Z" description:"A data e hora de criação do usuário"`
+	UpdatedAt time.Time `json:"updated_at" example:"2022-01-01T01:00:00Z" description:"A data e hora da última atualização do usuário"`
 }
 
 type UserPresenter struct{}

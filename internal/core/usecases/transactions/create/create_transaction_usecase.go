@@ -1,10 +1,11 @@
 package create_transaction
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/axel-andrade/finance_planner_api/internal/core/domain"
-	shared_err "github.com/axel-andrade/finance_planner_api/internal/core/domain/errors"
+	"github.com/axel-andrade/finance_planner_api/internal/core/domain/constants"
 )
 
 type CreateTransactionUC struct {
@@ -26,7 +27,7 @@ func (bs *CreateTransactionUC) Execute(input CreateTransactionInputDTO) (*Create
 
 	if u == nil {
 		log.Println("error: user not found")
-		return nil, shared_err.NewNotFoundError(shared_err.USER_NOT_FOUND)
+		return nil, fmt.Errorf(constants.USER_NOT_FOUND)
 	}
 
 	log.Println("info: searching category with id: ", input.CategoryID)
@@ -39,12 +40,12 @@ func (bs *CreateTransactionUC) Execute(input CreateTransactionInputDTO) (*Create
 
 	if c == nil {
 		log.Println("error: category not found")
-		return nil, shared_err.NewNotFoundError(shared_err.CATEGORY_NOT_FOUND)
+		return nil, fmt.Errorf(constants.CATEGORY_NOT_FOUND)
 	}
 
 	if c.Type != input.Type {
 		log.Println("error: category type does not match transaction type")
-		return nil, shared_err.NewInvalidOperationError(shared_err.CATEGORY_NOT_BELONGS_TRANSACTION_TYPE)
+		return nil, fmt.Errorf(constants.CATEGORY_TYPE_MISMATCH)
 	}
 
 	log.Println("info: extracting month and year from date")

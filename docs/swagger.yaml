@@ -50,34 +50,26 @@ definitions:
         example: "2022-01-01T01:00:00Z"
         type: string
     type: object
-  domain.User:
+  create_transaction.CreateTransactionInputDTO:
     properties:
-      created_at:
+      amount:
+        type: integer
+      category_id:
         type: string
-      email:
-        $ref: '#/definitions/value_object.Email'
-      id:
+      date:
         type: string
-      name:
-        $ref: '#/definitions/value_object.Name'
-      updated_at:
+      description:
         type: string
-    type: object
-  login.LoginInputDTO:
-    properties:
-      email:
+      installment:
+        type: integer
+      is_installment:
+        type: boolean
+      is_recurring:
+        type: boolean
+      type:
         type: string
-      password:
+      user_id:
         type: string
-    type: object
-  login.LoginOutputDTO:
-    properties:
-      access_token:
-        type: string
-      refresh_token:
-        type: string
-      user:
-        $ref: '#/definitions/domain.User'
     type: object
   presenters.GetUsersOutputFormatted:
     properties:
@@ -107,16 +99,6 @@ definitions:
       name:
         type: string
       password:
-        type: string
-    type: object
-  value_object.Email:
-    properties:
-      value:
-        type: string
-    type: object
-  value_object.Name:
-    properties:
-      value:
         type: string
     type: object
 info:
@@ -152,6 +134,36 @@ paths:
       summary: Register user
       tags:
       - Auth
+  /api/v1/transactions:
+    post:
+      consumes:
+      - application/json
+      description: Create a new transaction
+      parameters:
+      - description: Transaction data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/create_transaction.CreateTransactionInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/presenters.GetUsersOutputFormatted'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/shared_err.InvalidOperationError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/shared_err.InternalError'
+      summary: Create a new transaction
+      tags:
+      - transactions
   /api/v1/users:
     get:
       consumes:
@@ -184,26 +196,4 @@ paths:
       summary: Get users
       tags:
       - users
-  /login:
-    post:
-      consumes:
-      - application/json
-      description: Login
-      parameters:
-      - description: Login
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/login.LoginInputDTO'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/login.LoginOutputDTO'
-      summary: Login
-      tags:
-      - Auth
 swagger: "2.0"

@@ -27,7 +27,7 @@
                 },
                 "date": {
                     "type": "string",
-                    "format": "date"
+                    "format": "date-time"
                 },
                 "is_recurring": {
                     "type": "boolean"
@@ -43,7 +43,7 @@
                 "category_id",
                 "type",
                 "amount",
-                "status"
+                "date"
             ],
             "additionalProperties": false
         }

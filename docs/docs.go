@@ -61,6 +61,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/transactions": {
+            "post": {
+                "description": "Create a new transaction",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transactions"
+                ],
+                "summary": "Create a new transaction",
+                "parameters": [
+                    {
+                        "description": "Transaction data",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/create_transaction.CreateTransactionInputDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/presenters.GetUsersOutputFormatted"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/shared_err.InvalidOperationError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/shared_err.InternalError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users": {
             "get": {
                 "description": "Returns a list of users from the database.",
@@ -105,40 +151,6 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/shared_err.InternalError"
-                        }
-                    }
-                }
-            }
-        },
-        "/login": {
-            "post": {
-                "description": "Login",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Login",
-                "parameters": [
-                    {
-                        "description": "Login",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/login.LoginInputDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/login.LoginOutputDTO"
                         }
                     }
                 }
@@ -214,48 +226,35 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.User": {
+        "create_transaction.CreateTransactionInputDTO": {
             "type": "object",
             "properties": {
-                "created_at": {
+                "amount": {
+                    "type": "integer"
+                },
+                "category_id": {
                     "type": "string"
                 },
-                "email": {
-                    "$ref": "#/definitions/value_object.Email"
-                },
-                "id": {
+                "date": {
                     "type": "string"
                 },
-                "name": {
-                    "$ref": "#/definitions/value_object.Name"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "login.LoginInputDTO": {
-            "type": "object",
-            "properties": {
-                "email": {
+                "description": {
                     "type": "string"
                 },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "login.LoginOutputDTO": {
-            "type": "object",
-            "properties": {
-                "access_token": {
+                "installment": {
+                    "type": "integer"
+                },
+                "is_installment": {
+                    "type": "boolean"
+                },
+                "is_recurring": {
+                    "type": "boolean"
+                },
+                "type": {
                     "type": "string"
                 },
-                "refresh_token": {
+                "user_id": {
                     "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/domain.User"
                 }
             }
         },
@@ -301,22 +300,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "value_object.Email": {
-            "type": "object",
-            "properties": {
-                "value": {
-                    "type": "string"
-                }
-            }
-        },
-        "value_object.Name": {
-            "type": "object",
-            "properties": {
-                "value": {
                     "type": "string"
                 }
             }

@@ -20,16 +20,16 @@ type Transaction struct {
 	CategoryID    string `json:"category_id"`
 	Status        string `json:"status"`
 	Type          string `json:"type"`
+	Amount        int32  `json:"amount"`
 	Description   string `json:"description"`
 	Date          string `json:"date"`
 	MonthYear     string `json:"month_year"`
-	IsRecurring   bool   `json:"is_recurring"`
-	IsInstallment bool   `json:"is_installment"`
-	Installment   int32  `json:"installment"`
-	Amount        int32  `json:"amount"`
+	IsRecurring   *bool  `json:"is_recurring"`
+	IsInstallment *bool  `json:"is_installment"`
+	Installment   *int32 `json:"installment"`
 }
 
-func NewTransaction(userID, categoryId, status, transactionType, description, date, monthYear string, isRecurring, isInstallment bool, installment, amount int32) (*Transaction, error) {
+func NewTransaction(userID, categoryId, status, transactionType, description, date, monthYear string, isRecurring, isInstallment *bool, installment *int32, amount int32) (*Transaction, error) {
 	i := &Transaction{
 		UserID:        userID,
 		CategoryID:    categoryId,

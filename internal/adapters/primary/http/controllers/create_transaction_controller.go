@@ -28,7 +28,7 @@ func BuildCreateTransactionController(uc *create_transaction.CreateTransactionUC
 // @Failure		500		{object}	shared_err.InternalError			"Internal Server Error"
 // @Router			/api/v1/transactions [post]
 func (ctrl *CreateTransactionController) Handle(c *gin.Context) {
-	userId, exists := c.Get("user_id")
+	userID, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id not found in context"})
 		return
@@ -36,15 +36,25 @@ func (ctrl *CreateTransactionController) Handle(c *gin.Context) {
 
 	inputMap := c.MustGet("body").(map[string]any)
 	input := create_transaction.CreateTransactionInputDTO{
-		UserID:        userId.(string),
-		Type:          inputMap["type"].(string),
-		Amount:        inputMap["amount"].(int32),
-		CategoryID:    inputMap["category_id"].(string),
-		Date:          inputMap["date"].(string),
-		Description:   inputMap["description"].(string),
-		Installment:   inputMap["installment"].(int32),
-		IsInstallment: inputMap["is_installment"].(bool),
-		IsRecurring:   inputMap["is_recurring"].(bool),
+		UserID:      userID.(string),
+		Type:        inputMap["type"].(string),
+		Amount:      int32(inputMap["amount"].(float64)),
+		CategoryID:  inputMap["category_id"].(string),
+		Date:        inputMap["date"].(string),
+		Description: inputMap["description"].(string),
+	}
+
+	if isRecurring, ok := inputMap["is_recurring"].(bool); ok {
+		input.IsRecurring = &isRecurring
+	}
+
+	if isInstallment, ok := inputMap["is_installment"].(bool); ok {
+		input.IsInstallment = &isInstallment
+	}
+
+	if installment, ok := inputMap["installment"].(float64); ok {
+		installmentInt32 := int32(installment)
+		input.Installment = &installmentInt32
 	}
 
 	result, err := ctrl.Usecase.Execute(input)

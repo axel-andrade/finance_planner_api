@@ -23,7 +23,7 @@ func BuildSessionRepository() *SessionRepository {
 	return &SessionRepository{Redis: redis_database.GetRedisDB()}
 }
 
-func (s *SessionRepository) GetAuth(auth *domain.AccessDetails) (domain.UniqueEntityID, error) {
+func (s *SessionRepository) GetAuth(auth *domain.AccessDetails) (string, error) {
 	userid, err := s.Redis.Get(ctx, auth.AccessUUID).Result()
 	if err != nil {
 		return "", err

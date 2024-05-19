@@ -21,14 +21,6 @@ func BuildLoginController(i *login.LoginInteractor, ptr *presenters.LoginPresent
 	return &LoginController{Interactor: *i, Presenter: *ptr}
 }
 
-// @Summary		Login
-// @Description	Login
-// @Tags			Auth
-// @Accept			json
-// @Produce		json
-// @Param			body	body		login.LoginInputDTO	true	"Login"
-// @Success		200		{object}	login.LoginOutputDTO
-// @Router			/login [post]
 func (ctrl *LoginController) Handle(c *gin.Context) {
 	inputMap := c.MustGet("body").(map[string]any)
 	loginInput := login.LoginInputDTO{

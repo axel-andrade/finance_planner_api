@@ -116,4 +116,5 @@ func loadControllers(d *Dependencies) {
 	d.LoginController = controllers.BuildLoginController(d.LoginInteractor, d.LoginPresenter)
 	d.LogoutController = controllers.BuildLogoutController(d.LogoutInteractor, d.LogoutPresenter)
 	d.GetUsersController = controllers.BuildGetUsersController(d.GetUsersInteractor, d.GetUsersPresenter)
+	d.CreateTransactionController = controllers.BuildCreateTransactionController(d.CreateTransactionUsecase, d.CreateTransactionPresenter)
 }

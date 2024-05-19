@@ -12,7 +12,7 @@ type TransactionMapper struct {
 }
 
 func (m *TransactionMapper) ToDomain(model models.TransactionModel) *domain.Transaction {
-	return &domain.Transaction{
+	domain := &domain.Transaction{
 		Base:          *m.BaseMapper.toDomain(model.Base),
 		UserID:        model.UserID,
 		CategoryID:    model.CategoryID,
@@ -20,18 +20,20 @@ func (m *TransactionMapper) ToDomain(model models.TransactionModel) *domain.Tran
 		Type:          model.Type,
 		Amount:        model.Amount,
 		Date:          model.Date.String(),
+		Description:   model.Description,
+		MonthYear:     model.MonthYear,
 		IsRecurring:   model.IsRecurring,
 		IsInstallment: model.IsInstallment,
 		Installment:   model.Installment,
-		Description:   model.Description,
-		MonthYear:     model.MonthYear,
 	}
+
+	return domain
 }
 
 func (m *TransactionMapper) ToPersistence(e domain.Transaction) *models.TransactionModel {
 	d, _ := time.Parse("2006-01-02", e.Date)
 
-	return &models.TransactionModel{
+	model := &models.TransactionModel{
 		Base:          *m.BaseMapper.toPersistence(e.Base),
 		UserID:        e.UserID,
 		CategoryID:    e.CategoryID,
@@ -39,12 +41,14 @@ func (m *TransactionMapper) ToPersistence(e domain.Transaction) *models.Transact
 		Type:          e.Type,
 		Amount:        e.Amount,
 		Date:          d,
+		Description:   e.Description,
+		MonthYear:     e.MonthYear,
 		IsRecurring:   e.IsRecurring,
 		IsInstallment: e.IsInstallment,
 		Installment:   e.Installment,
-		Description:   e.Description,
-		MonthYear:     e.MonthYear,
 	}
+
+	return model
 }
 
 func (m *TransactionMapper) ToUpdate(model models.TransactionModel, e domain.Transaction) *models.TransactionModel {
@@ -69,15 +73,15 @@ func (m *TransactionMapper) ToUpdate(model models.TransactionModel, e domain.Tra
 		model.Date = d
 	}
 
-	if e.IsRecurring == false || e.IsRecurring == true {
+	if e.IsRecurring != nil {
 		model.IsRecurring = e.IsRecurring
 	}
 
-	if e.IsInstallment == false || e.IsInstallment == true {
+	if e.IsInstallment != nil {
 		model.IsInstallment = e.IsInstallment
 	}
 
-	if e.Installment != 0 {
+	if e.Installment != nil {
 		model.Installment = e.Installment
 	}
 

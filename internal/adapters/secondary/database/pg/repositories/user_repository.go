@@ -46,15 +46,15 @@ func (r *UserRepository) FindUserByEmail(email string) (*domain.User, error) {
 	return r.UserMapper.ToDomain(user), nil
 }
 
-func (r *UserRepository) FindUserByID(id domain.UniqueEntityID) (*domain.User, error) {
-	var user domain.User
+func (r *UserRepository) FindUserByID(id string) (*domain.User, error) {
+	var user models.User
 	err := r.Db.First(&user, "id = ?", id).Error
 
 	if err != nil || user.ID == "" {
 		return nil, err
 	}
 
-	return &user, nil
+	return r.UserMapper.ToDomain(user), nil
 }
 
 func (r *UserRepository) GetUsersPaginate(pagination domain.PaginationOptions) ([]domain.User, uint64, error) {

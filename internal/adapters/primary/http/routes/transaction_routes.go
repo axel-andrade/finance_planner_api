@@ -9,6 +9,6 @@ import (
 func configureTransactionsRoutes(router *gin.RouterGroup, d *infra.Dependencies) {
 	auth := router.Group("transactions")
 	{
-		auth.POST("/", middlewares.ValidateRequest("transactions/create_transaction"), d.SignUpController.Handle)
+		auth.POST("/", middlewares.Authorize(d), middlewares.ValidateRequest("transactions/create_transaction"), d.CreateTransactionController.Handle)
 	}
 }

@@ -16,7 +16,11 @@ type TransactionModel struct {
 	Date          time.Time `gorm:"type:date;not null" json:"date"`
 	MonthYear     string    `gorm:"type:varchar(7);not null;index" json:"month_year"`
 	Status        string    `gorm:"type:varchar(50);not null" json:"status"`
-	IsRecurring   bool      `json:"is_recurring"`
-	IsInstallment bool      `json:"is_installment"`
-	Installment   int32     `json:"installment"`
+	IsRecurring   *bool     `gorm:"default:null" json:"is_recurring,omitempty"`
+	IsInstallment *bool     `gorm:"default:null" json:"is_installment,omitempty"`
+	Installment   *int32    `gorm:"default:null" json:"installment,omitempty"`
+}
+
+func (TransactionModel) TableName() string {
+	return "transactions"
 }

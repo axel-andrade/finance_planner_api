@@ -2,7 +2,6 @@ package pg_repositories
 
 import (
 	database "github.com/axel-andrade/finance_planner_api/internal/adapters/secondary/database/pg"
-	"github.com/axel-andrade/finance_planner_api/internal/core/domain"
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 )
@@ -61,6 +60,6 @@ func (r *BaseRepository) CancelTransaction() error {
 	return nil
 }
 
-func (r *BaseRepository) NextEntityID() domain.UniqueEntityID {
+func (r *BaseRepository) NextEntityID() string {
 	return uuid.NewV4().String()
 }

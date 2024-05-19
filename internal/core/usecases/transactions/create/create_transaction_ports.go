@@ -14,10 +14,10 @@ type CreateTransactionInputDTO struct {
 	Type          string `json:"type"`
 	Description   string `json:"description"`
 	Date          string `json:"date"`
-	IsRecurring   bool   `json:"is_recurring"`
-	IsInstallment bool   `json:"is_installment"`
-	Installment   int32  `json:"installment"`
 	Amount        int32  `json:"amount"`
+	IsRecurring   *bool  `json:"is_recurring,omitempty"`
+	IsInstallment *bool  `json:"is_installment,omitempty"`
+	Installment   *int32 `json:"installment,omitempty"`
 }
 
 type CreateTransactionOutputDTO struct {
