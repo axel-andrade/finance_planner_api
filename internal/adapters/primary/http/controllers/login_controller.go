@@ -8,17 +8,17 @@ import (
 )
 
 type LoginController struct {
-	Interactor login.LoginInteractor
-	Presenter  presenters.LoginPresenter
+	LoginUC   login.LoginUC
+	Presenter presenters.LoginPresenter
 }
 
 func (ctrl *LoginController) Run(input login.LoginInputDTO) common_adapters.OutputPort {
-	result, err := ctrl.Interactor.Execute(input)
+	result, err := ctrl.LoginUC.Execute(input)
 	return ctrl.Presenter.Show(result, err)
 }
 
-func BuildLoginController(i *login.LoginInteractor, ptr *presenters.LoginPresenter) *LoginController {
-	return &LoginController{Interactor: *i, Presenter: *ptr}
+func BuildLoginController(uc *login.LoginUC, ptr *presenters.LoginPresenter) *LoginController {
+	return &LoginController{LoginUC: *uc, Presenter: *ptr}
 }
 
 func (ctrl *LoginController) Handle(c *gin.Context) {
@@ -28,7 +28,7 @@ func (ctrl *LoginController) Handle(c *gin.Context) {
 		Password: inputMap["password"].(string),
 	}
 
-	result, err := ctrl.Interactor.Execute(loginInput)
+	result, err := ctrl.LoginUC.Execute(loginInput)
 	output := ctrl.Presenter.Show(result, err)
 
 	c.JSON(output.StatusCode, output.Data)

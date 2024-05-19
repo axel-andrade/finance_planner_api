@@ -1,6 +1,10 @@
 package value_object
 
-import shared_err "github.com/axel-andrade/finance_planner_api/internal/core/domain/errors"
+import (
+	"fmt"
+
+	err_msg "github.com/axel-andrade/finance_planner_api/internal/core/domain/constants/errors"
+)
 
 type Password struct {
 	Value string
@@ -11,5 +15,5 @@ func (p *Password) Validate() error {
 		return nil
 	}
 
-	return shared_err.NewInvalidOperationError(shared_err.INVALID_PASSWORD)
+	return fmt.Errorf(err_msg.INVALID_PASSWORD)
 }

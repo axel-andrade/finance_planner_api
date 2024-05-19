@@ -1,9 +1,10 @@
 package value_object
 
 import (
+	"fmt"
 	"regexp"
 
-	shared_err "github.com/axel-andrade/finance_planner_api/internal/core/domain/errors"
+	err_msg "github.com/axel-andrade/finance_planner_api/internal/core/domain/constants/errors"
 )
 
 type Email struct {
@@ -17,5 +18,5 @@ func (e *Email) Validate() error {
 		return nil
 	}
 
-	return shared_err.NewInvalidOperationError(shared_err.INVALID_EMAIL)
+	return fmt.Errorf(err_msg.INVALID_EMAIL)
 }

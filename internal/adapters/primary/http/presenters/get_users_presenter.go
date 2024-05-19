@@ -7,7 +7,7 @@ import (
 
 	common_ptr "github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/presenters/common"
 	"github.com/axel-andrade/finance_planner_api/internal/core/domain"
-	shared_err "github.com/axel-andrade/finance_planner_api/internal/core/domain/errors"
+	err_msg "github.com/axel-andrade/finance_planner_api/internal/core/domain/constants/errors"
 	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/get_users"
 )
 
@@ -27,7 +27,7 @@ func BuildGetUsersPresenter() *GetUsersPresenter {
 
 func (ptr *GetUsersPresenter) Show(result *get_users.GetUsersOutputDTO, paginationOptions domain.PaginationOptions, err error) cad.OutputPort {
 	if err != nil {
-		return cad.OutputPort{StatusCode: http.StatusBadRequest, Data: cad.ErrorMessage{Message: shared_err.INTERNAL_ERROR}}
+		return cad.OutputPort{StatusCode: http.StatusBadRequest, Data: cad.ErrorMessage{Message: err_msg.INTERNAL_SERVER_ERROR}}
 	}
 
 	u := ptr.userPtr.FormatList(result.Users)

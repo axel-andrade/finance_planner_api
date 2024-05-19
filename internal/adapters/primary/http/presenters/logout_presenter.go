@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	common_adapters "github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/common"
-	shared_err "github.com/axel-andrade/finance_planner_api/internal/core/domain/errors"
+	err_msg "github.com/axel-andrade/finance_planner_api/internal/core/domain/constants/errors"
 )
 
 type LogoutPresenter struct{}
@@ -22,9 +22,10 @@ func (p *LogoutPresenter) Show(err error) common_adapters.OutputPort {
 }
 
 func (p *LogoutPresenter) formatError(err error) common_adapters.OutputPort {
-	if uErr, ok := err.(*shared_err.UnauthorizedError); ok {
-		return common_adapters.OutputPort{StatusCode: http.StatusConflict, Data: common_adapters.ErrorMessage{Message: uErr.Error()}}
+	switch err.Error() {
+	case err_msg.UNAUTHORIZED:
+		return common_adapters.OutputPort{StatusCode: http.StatusUnauthorized, Data: common_adapters.ErrorMessage{Message: err.Error()}}
+	default:
+		return common_adapters.OutputPort{StatusCode: http.StatusBadRequest, Data: common_adapters.ErrorMessage{Message: err_msg.INTERNAL_SERVER_ERROR}}
 	}
-
-	return common_adapters.OutputPort{StatusCode: http.StatusBadRequest, Data: common_adapters.ErrorMessage{Message: shared_err.INTERNAL_ERROR}}
 }

@@ -11,12 +11,12 @@ import (
 )
 
 type GetUsersController struct {
-	Interactor interactor.GetUsersInteractor
+	GetUsersUC interactor.GetUsersUC
 	Presenter  presenters.GetUsersPresenter
 }
 
-func BuildGetUsersController(i *get_users.GetUsersInteractor, ptr *presenters.GetUsersPresenter) *GetUsersController {
-	return &GetUsersController{Interactor: *i, Presenter: *ptr}
+func BuildGetUsersController(uc *get_users.GetUsersUC, ptr *presenters.GetUsersPresenter) *GetUsersController {
+	return &GetUsersController{GetUsersUC: *uc, Presenter: *ptr}
 }
 
 // @Summary		Get users
@@ -45,7 +45,7 @@ func (ctrl *GetUsersController) Handle(c *gin.Context) {
 
 	input := get_users.GetUsersInputDTO{PaginationOptions: paginationOptions}
 
-	result, err := ctrl.Interactor.Execute(input)
+	result, err := ctrl.GetUsersUC.Execute(input)
 	output := ctrl.Presenter.Show(result, input.PaginationOptions, err)
 
 	c.JSON(output.StatusCode, output.Data)

@@ -7,12 +7,12 @@ import (
 )
 
 type SignUpController struct {
-	Interactor signup.SignupInteractor
-	Presenter  presenters.SignupPresenter
+	SignupUC  signup.SignupUC
+	Presenter presenters.SignupPresenter
 }
 
-func BuildSignUpController(i *signup.SignupInteractor, ptr *presenters.SignupPresenter) *SignUpController {
-	return &SignUpController{Interactor: *i, Presenter: *ptr}
+func BuildSignUpController(uc *signup.SignupUC, ptr *presenters.SignupPresenter) *SignUpController {
+	return &SignUpController{SignupUC: *uc, Presenter: *ptr}
 }
 
 // @Summary		Register user
@@ -33,7 +33,7 @@ func (ctrl *SignUpController) Handle(c *gin.Context) {
 		Password: inputMap["password"].(string),
 	}
 
-	result, err := ctrl.Interactor.Execute(signupInput)
+	result, err := ctrl.SignupUC.Execute(signupInput)
 	output := ctrl.Presenter.Show(result, err)
 
 	c.JSON(output.StatusCode, output.Data)

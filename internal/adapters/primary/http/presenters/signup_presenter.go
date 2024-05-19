@@ -5,7 +5,7 @@ import (
 
 	common_adapters "github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/common"
 	common_ptr "github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/presenters/common"
-	shared_err "github.com/axel-andrade/finance_planner_api/internal/core/domain/errors"
+	err_msg "github.com/axel-andrade/finance_planner_api/internal/core/domain/constants/errors"
 	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/auth/signup"
 )
 
@@ -26,15 +26,12 @@ func (p *SignupPresenter) Show(result *signup.SignupOutputDTO, err error) common
 }
 
 func (p *SignupPresenter) formatError(err error) common_adapters.OutputPort {
-	if cErr, ok := err.(*shared_err.ConflictError); ok {
-		return common_adapters.OutputPort{
-			StatusCode: http.StatusConflict,
-			Data:       common_adapters.ErrorMessage{Message: cErr.Error()},
-		}
-	}
-
-	return common_adapters.OutputPort{
-		StatusCode: http.StatusBadRequest,
-		Data:       common_adapters.ErrorMessage{Message: shared_err.INTERNAL_ERROR},
+	switch err.Error() {
+	case err_msg.INVALID_PASSWORD, err_msg.INVALID_EMAIL, err_msg.INVALID_NAME:
+		return common_adapters.OutputPort{StatusCode: http.StatusBadRequest, Data: common_adapters.ErrorMessage{Message: err.Error()}}
+	case err_msg.USER_ALREADY_EXISTS:
+		return common_adapters.OutputPort{StatusCode: http.StatusConflict, Data: common_adapters.ErrorMessage{Message: err.Error()}}
+	default:
+		return common_adapters.OutputPort{StatusCode: http.StatusBadRequest, Data: common_adapters.ErrorMessage{Message: err_msg.INTERNAL_SERVER_ERROR}}
 	}
 }

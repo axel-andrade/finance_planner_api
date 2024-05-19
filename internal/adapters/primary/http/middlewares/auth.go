@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	shared_err "github.com/axel-andrade/finance_planner_api/internal/core/domain/errors"
+	err_msg "github.com/axel-andrade/finance_planner_api/internal/core/domain/constants/errors"
 	"github.com/axel-andrade/finance_planner_api/internal/infra"
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +17,7 @@ func Authorize(dependencies *infra.Dependencies) gin.HandlerFunc {
 		authHeader := c.GetHeader("Authorization")
 		if len(authHeader) == 0 {
 			fmt.Println("message: authorization not informed")
-			c.JSON(http.StatusUnauthorized, gin.H{"error": shared_err.UNAUTHORIZED})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err_msg.UNAUTHORIZED})
 			c.Abort()
 			return
 		}
@@ -27,7 +27,7 @@ func Authorize(dependencies *infra.Dependencies) gin.HandlerFunc {
 		tokenAuth, err := tokenManagerHandler.ExtractTokenMetadata(encodedToken)
 		if err != nil {
 			fmt.Println("error: error in extract token metadata: ", err.Error())
-			c.JSON(http.StatusUnauthorized, gin.H{"error": shared_err.UNAUTHORIZED})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err_msg.UNAUTHORIZED})
 			c.Abort()
 			return
 		}
@@ -35,7 +35,7 @@ func Authorize(dependencies *infra.Dependencies) gin.HandlerFunc {
 		userID, err := sessionRepo.GetAuth(tokenAuth)
 		if err != nil {
 			fmt.Println("error in get auth: ", err.Error())
-			c.JSON(http.StatusUnauthorized, gin.H{"error": shared_err.UNAUTHORIZED})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err_msg.UNAUTHORIZED})
 			c.Abort()
 			return
 		}

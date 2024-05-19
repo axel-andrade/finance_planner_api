@@ -5,7 +5,7 @@ import (
 
 	common_adapters "github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/common"
 	common_ptr "github.com/axel-andrade/finance_planner_api/internal/adapters/primary/http/presenters/common"
-	shared_err "github.com/axel-andrade/finance_planner_api/internal/core/domain/errors"
+	err_msg "github.com/axel-andrade/finance_planner_api/internal/core/domain/constants/errors"
 	"github.com/axel-andrade/finance_planner_api/internal/core/usecases/auth/login"
 )
 
@@ -45,14 +45,12 @@ func (p *LoginPresenter) formatSuccessOutput(result *login.LoginOutputDTO) commo
 }
 
 func (p *LoginPresenter) formatError(err error) common_adapters.OutputPort {
-	if ipErr, ok := err.(*shared_err.InvalidOperationError); ok {
-		return common_adapters.OutputPort{StatusCode: http.StatusBadRequest, Data: common_adapters.ErrorMessage{Message: ipErr.Error()}}
+	switch err.Error() {
+	case err_msg.USER_NOT_FOUND:
+		return common_adapters.OutputPort{StatusCode: http.StatusNotFound, Data: common_adapters.ErrorMessage{Message: err.Error()}}
+	case err_msg.INVALID_PASSWORD:
+		return common_adapters.OutputPort{StatusCode: http.StatusBadRequest, Data: common_adapters.ErrorMessage{Message: err.Error()}}
+	default:
+		return common_adapters.OutputPort{StatusCode: http.StatusBadRequest, Data: common_adapters.ErrorMessage{Message: err_msg.INTERNAL_SERVER_ERROR}}
 	}
-
-	if nfErr, ok := err.(*shared_err.NotFoundError); ok {
-		return common_adapters.OutputPort{StatusCode: http.StatusNotFound, Data: common_adapters.ErrorMessage{Message: nfErr.Error()}}
-
-	}
-
-	return common_adapters.OutputPort{StatusCode: http.StatusBadRequest, Data: common_adapters.ErrorMessage{Message: shared_err.INTERNAL_ERROR}}
 }

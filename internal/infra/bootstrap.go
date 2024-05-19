@@ -30,11 +30,11 @@ type Dependencies struct {
 	GetUsersController          *controllers.GetUsersController
 	CreateTransactionController *controllers.CreateTransactionController
 
-	SignupInteractor         *signup.SignupInteractor
-	LoginInteractor          *login.LoginInteractor
-	LogoutInteractor         *logout.LogoutInteractor
-	GetUsersInteractor       *get_users.GetUsersInteractor
-	CreateTransactionUsecase *create_transaction.CreateTransactionUC
+	SignupUC            *signup.SignupUC
+	LoginUC             *login.LoginUC
+	LogoutUC            *logout.LogoutUC
+	GetUsersUC          *get_users.GetUsersUC
+	CreateTransactionUC *create_transaction.CreateTransactionUC
 
 	LoginPresenter             *presenters.LoginPresenter
 	SignupPresenter            *presenters.SignupPresenter
@@ -83,28 +83,28 @@ func loadPresenters(d *Dependencies) {
 }
 
 func loadUseCases(d *Dependencies) {
-	d.SignupInteractor = signup.BuildSignUpInteractor(struct {
+	d.SignupUC = signup.BuildSignupUC(struct {
 		*pg_repositories.UserRepository
 		*handlers.EncrypterHandler
 	}{d.UserRepository, d.EncrypterHandler})
 
-	d.LoginInteractor = login.BuildLoginInteractor(struct {
+	d.LoginUC = login.BuildLoginUC(struct {
 		*redis_repositories.SessionRepository
 		*pg_repositories.UserRepository
 		*handlers.EncrypterHandler
 		*handlers.TokenManagerHandler
 	}{d.SessionRepository, d.UserRepository, d.EncrypterHandler, d.TokenManagerHandler})
 
-	d.LogoutInteractor = logout.BuildLogoutInteractor(struct {
+	d.LogoutUC = logout.BuildLogoutUC(struct {
 		*redis_repositories.SessionRepository
 		*handlers.TokenManagerHandler
 	}{d.SessionRepository, d.TokenManagerHandler})
 
-	d.GetUsersInteractor = get_users.BuildGetUsersInteractor(struct {
+	d.GetUsersUC = get_users.BuildGetUsersUC(struct {
 		*pg_repositories.UserRepository
 	}{d.UserRepository})
 
-	d.CreateTransactionUsecase = create_transaction.BuildCreateTransactionUC(struct {
+	d.CreateTransactionUC = create_transaction.BuildCreateTransactionUC(struct {
 		*pg_repositories.UserRepository
 		*pg_repositories.CategoryRepository
 		*pg_repositories.TransactionRepository
@@ -112,9 +112,9 @@ func loadUseCases(d *Dependencies) {
 }
 
 func loadControllers(d *Dependencies) {
-	d.SignUpController = controllers.BuildSignUpController(d.SignupInteractor, d.SignupPresenter)
-	d.LoginController = controllers.BuildLoginController(d.LoginInteractor, d.LoginPresenter)
-	d.LogoutController = controllers.BuildLogoutController(d.LogoutInteractor, d.LogoutPresenter)
-	d.GetUsersController = controllers.BuildGetUsersController(d.GetUsersInteractor, d.GetUsersPresenter)
-	d.CreateTransactionController = controllers.BuildCreateTransactionController(d.CreateTransactionUsecase, d.CreateTransactionPresenter)
+	d.SignUpController = controllers.BuildSignUpController(d.SignupUC, d.SignupPresenter)
+	d.LoginController = controllers.BuildLoginController(d.LoginUC, d.LoginPresenter)
+	d.LogoutController = controllers.BuildLogoutController(d.LogoutUC, d.LogoutPresenter)
+	d.GetUsersController = controllers.BuildGetUsersController(d.GetUsersUC, d.GetUsersPresenter)
+	d.CreateTransactionController = controllers.BuildCreateTransactionController(d.CreateTransactionUC, d.CreateTransactionPresenter)
 }
