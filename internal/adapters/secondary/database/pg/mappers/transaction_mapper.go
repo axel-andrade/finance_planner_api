@@ -31,7 +31,7 @@ func (m *TransactionMapper) ToDomain(model models.TransactionModel) *domain.Tran
 }
 
 func (m *TransactionMapper) ToPersistence(e domain.Transaction) *models.TransactionModel {
-	d, _ := time.Parse("2006-01-02", e.Date)
+	d, _ := time.Parse(time.RFC3339, e.Date)
 
 	model := &models.TransactionModel{
 		Base:          *m.BaseMapper.toPersistence(e.Base),
